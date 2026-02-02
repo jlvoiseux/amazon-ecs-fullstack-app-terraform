@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: MIT-0
 
 # build stage
-FROM public.ecr.aws/bitnami/node:16 as build-stage
+FROM node:16 as build-stage
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
@@ -10,7 +10,8 @@ COPY . .
 RUN npm run build
 
 # production stage
-FROM public.ecr.aws/nginx/nginx:latest as production-stage
+FROM nginx:latest as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
+COPY default.conf /etc/nginx/conf.d/default.conf
 CMD ["nginx", "-g", "daemon off;"]

@@ -1,7 +1,7 @@
 # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
 # SPDX-License-Identifier: MIT-0
 
-FROM public.ecr.aws/bitnami/node:latest
+FROM node:latest
 
 RUN mkdir -p /home/node/app/node_modules
 

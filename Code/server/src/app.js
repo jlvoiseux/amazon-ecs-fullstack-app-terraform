@@ -4,7 +4,10 @@
 const express = require('express');
 const app = express();
 var cors = require('cors');
-const AWS = require('aws-sdk')
+const { DynamoDBClient } = require('@aws-sdk/client-dynamodb')
+const { DynamoDBDocumentClient, ScanCommand } = require('@aws-sdk/lib-dynamodb')
+const ddbClient = new DynamoDBClient({})
+const docClient = DynamoDBDocumentClient.from(ddbClient)
 const port = 3001;
 
 app.use(cors());
@@ -44,27 +47,14 @@ app.get('/status', (req, res) => {
 *       200:
 *         description: Retrieves a list of products
 */
-app.get('/api/getAllProducts', (req, res) => {
-  AB3_TABLE = "DYNAMODB_TABLE"  //DYNAMODB_TABLE value is retrieved from the generated resources created by the terraform code
-    const docClient = new AWS.DynamoDB.DocumentClient();
-    const params = {
-      TableName: AB3_TABLE
-    }
-  
-    docClient.scan(params, function(err, data) {
-      if (err) {
-        res.send({
-          code: err.status,
-          description: err.message
-        });
-      } else {
-        var products = data.Items
-        res.send({
-          products
-        });
-      }
-    });
-
+app.get('/api/getAllProducts', async (req, res) => {
+  const tableName = process.env.DYNAMODB_TABLE || "DYNAMODB_TABLE"
+  try {
+    const data = await docClient.send(new ScanCommand({ TableName: tableName }))
+    res.send({ products: data.Items })
+  } catch (err) {
+    res.send({ code: err.$metadata?.httpStatusCode, description: err.message })
+  }
 })
 
 // catch 404 and forward to error handler
