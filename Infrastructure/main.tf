@@ -184,6 +184,9 @@ module "ecs_taks_definition_client" {
   docker_repo        = module.ecr_client.ecr_repository_url
   region             = var.aws_region
   container_port     = var.port_app_client
+  environment_variables = {
+    SERVER_URL = module.alb_server.dns_alb
+  }
 }
 
 # ------- Creating a server Security Group for ECS TASKS -------

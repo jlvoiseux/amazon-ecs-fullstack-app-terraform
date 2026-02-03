@@ -3,10 +3,9 @@
 
 import axios from 'axios'
 
-let serverUrl = "http://<SERVER_ALB_URL>" //this value is replaced by AWS CodeBuild 
-
+// Use relative URL - nginx proxies /api/* to the backend server
 export default {
     async getAllProducts() {
-        return await axios.get(serverUrl+"/api/getAllProducts");
+        return await axios.get("/api/getAllProducts");
     },
 }

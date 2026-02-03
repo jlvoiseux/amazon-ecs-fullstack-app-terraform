@@ -13,5 +13,5 @@ RUN npm run build
 FROM nginx:latest as production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 EXPOSE 80
-COPY default.conf /etc/nginx/conf.d/default.conf
-CMD ["nginx", "-g", "daemon off;"]
+COPY default.conf.template /etc/nginx/templates/default.conf.template
+# nginx docker image auto-runs envsubst on templates in /etc/nginx/templates/
