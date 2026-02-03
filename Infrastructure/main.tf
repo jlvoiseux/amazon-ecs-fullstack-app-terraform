@@ -167,6 +167,9 @@ module "ecs_taks_definition_server" {
   docker_repo        = module.ecr_server.ecr_repository_url
   region             = var.aws_region
   container_port     = var.port_app_server
+  environment_variables = {
+    DYNAMODB_TABLE = module.dynamodb_table.dynamodb_table_name
+  }
 }
 
 # ------- Creating ECS Task Definition for the client -------
